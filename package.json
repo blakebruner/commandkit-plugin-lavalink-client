@@ -16,6 +16,7 @@
     "dist"
   ],
   "scripts": {
+    "prepare": "bun run build",
     "build": "tsc"
   },
   "devDependencies": {
