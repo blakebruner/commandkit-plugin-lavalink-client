@@ -1,0 +1,27 @@
+{
+  "name": "commandkit-plugin-lavalink-client",
+  "description": "This is a CommandKit plugin that allows you to use commandkit's event system to listen to lavalink-client events.",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "keywords": [
+    "commandkit",
+    "lavalink-client",
+    "plugin"
+  ],
+  "author": "Blake Bruner",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "commandkit": "^1.2.0-rc.11",
+    "discord.js": "^14.22.1",
+    "lavalink-client": "^2.6.1",
+    "typescript": "^5.9.2"
+  }
+}
