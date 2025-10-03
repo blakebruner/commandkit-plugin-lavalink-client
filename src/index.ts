@@ -3,7 +3,7 @@ import {
   Logger,
   RuntimePlugin,
 } from 'commandkit';
-import { LavalinkManagerEvents } from 'lavalink-client';
+import { LavalinkManager, LavalinkManagerEvents } from 'lavalink-client';
 
 export interface LavalinkClientPluginOptions {
   /**
@@ -26,11 +26,29 @@ export const LL_EVENT_NAMES = [
 const LL_QUEUE_EVENTS = 'lavalink-manager';
 const LL_PLAYER_EVENTS = 'node-manager';
 
+let lavalink: LavalinkManager | null = null;
+
+export function setLavalinkManager(manager: LavalinkManager) {
+  lavalink = manager;
+}
+
+export function getLavalinkManager(): LavalinkManager {
+  if (!lavalink) {
+    throw new Error('LavalinkManager is not set. Please set it using setLavalinkManager().');
+  }
+
+  return lavalink;
+}
+
 export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOptions> {
   public readonly name = 'LavalinkClientPlugin';
 
   public async activate(ctx: CommandKitPluginRuntime): Promise<void> {
     Logger.info('LavalinkClientPlugin activated');
+
+    if (!lavalink) {
+      throw new Error('LavalinkManager is not set. Please set it using setLavalinkManager().');
+    }
 
     if (ctx.commandkit.client.isReady()) {
       // lavalink.init({ ...client.user });
@@ -44,12 +62,13 @@ export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOpti
 
   public async deactivate(ctx: CommandKitPluginRuntime): Promise<void> {
     Logger.info('LavalinkClientPlugin deactivated');
+    lavalink = null;
   }
 
   private initialize(ctx: CommandKitPluginRuntime) {
 
     LL_EVENT_NAMES.forEach((event) => {
-      ctx.commandkit.client.lavalink!.on(event, (...args: any[]) => {
+      lavalink!.on(event, (...args: any[]) => {
         ctx.commandkit.events
           .to(this.options.lavalinkManagerNamespace!)
           .emit(event, ...args);
