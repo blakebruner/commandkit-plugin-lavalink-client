@@ -18,19 +18,6 @@ export interface LavalinkClientPluginOptions {
   nodeManagerNamespace?: string;
 }
 
-export enum LavaLinkManagerEvent {
-  PlayerCreate = 'playerCreate',
-  PlayerDestroy = 'playerDestroy',
-  PlayerMove = 'playerMove',
-  PlayerUpdate = 'playerUpdate',
-  TrackStart = 'trackStart',
-  TrackEnd = 'trackEnd',
-  TrackStuck = 'trackStuck',
-  TrackError = 'trackError',
-  QueueEnd = 'queueEnd',
-  Debug = 'debug',
-}
-
 export const LL_EVENT_NAMES = [
   'playerCreate','playerDestroy','playerMove','playerUpdate',
   'trackStart','trackEnd','trackStuck','trackError','queueEnd','debug'
@@ -44,10 +31,6 @@ export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOpti
 
   public async activate(ctx: CommandKitPluginRuntime): Promise<void> {
     Logger.info('LavalinkClientPlugin activated');
-
-    if (!ctx.commandkit.client.lavalink) {
-      throw new Error('LavalinkManager not found on Discord Client. Make sure to load the LavalinkClientPlugin before this plugin.');
-    }
 
     if (ctx.commandkit.client.isReady()) {
       // lavalink.init({ ...client.user });
