@@ -23,8 +23,9 @@ export const LL_EVENT_NAMES = [
   'trackStart','trackEnd','trackStuck','trackError','queueEnd','debug'
 ] as const satisfies readonly (keyof LavalinkManagerEvents)[];
 
-const LL_QUEUE_EVENTS = 'lavalink-manager';
-const LL_PLAYER_EVENTS = 'node-manager';
+
+const LL_MANAGER_EVENTS = 'lavalink-manager';
+const LL_NODE_EVENTS = 'node-manager';
 
 let lavalink: LavalinkManager | null = null;
 
@@ -51,7 +52,6 @@ export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOpti
     }
 
     if (ctx.commandkit.client.isReady()) {
-      // lavalink.init({ ...client.user });
       this.initialize(ctx);
     } else {
       ctx.commandkit.client.once('ready', () => {
@@ -66,6 +66,13 @@ export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOpti
   }
 
   private initialize(ctx: CommandKitPluginRuntime) {
+    const client = ctx.commandkit.client;
+    if (!client.isReady()) {
+      throw new Error('Client is not ready');
+    }
+
+    ctx.commandkit.client.on("raw", d => lavalink!.sendRawData(d));
+    lavalink!.init({ ...client.user });
 
     LL_EVENT_NAMES.forEach((event) => {
       lavalink!.on(event, (...args: any[]) => {
@@ -87,7 +94,7 @@ export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOpti
 
 export function lavalinkClient(options?: LavalinkClientPluginOptions) {
   return new LavalinkClientPlugin({
-    lavalinkManagerNamespace: options?.lavalinkManagerNamespace ?? LL_PLAYER_EVENTS,
-    nodeManagerNamespace: options?.nodeManagerNamespace ?? LL_QUEUE_EVENTS,
+    lavalinkManagerNamespace: options?.lavalinkManagerNamespace ?? LL_MANAGER_EVENTS,
+    nodeManagerNamespace: options?.nodeManagerNamespace ?? LL_NODE_EVENTS,
   });
 }
