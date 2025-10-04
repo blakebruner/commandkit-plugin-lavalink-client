@@ -3,16 +3,16 @@ import {
   Logger,
   RuntimePlugin,
 } from 'commandkit';
-import { LavalinkManager, LavalinkManagerEvents } from 'lavalink-client';
+import { LavalinkManager, LavalinkManagerEvents, NodeManagerEvents } from 'lavalink-client';
 
 export interface LavalinkClientPluginOptions {
   /**
-   * Namespace for queue events.
+   * Namespace for lavalink manager.
    * @default 'lavalink-manager'
    */
   lavalinkManagerNamespace?: string;
   /**
-   * Namespace for player events.
+   * Namespace for node events.
    * @default 'node-manager'
    */
   nodeManagerNamespace?: string;
@@ -22,6 +22,10 @@ export const LL_EVENT_NAMES = [
   'playerCreate','playerDestroy','playerMove','playerUpdate',
   'trackStart','trackEnd','trackStuck','trackError','queueEnd','debug'
 ] as const satisfies readonly (keyof LavalinkManagerEvents)[];
+
+export const NODE_EVENT_NAMES = [
+  'create', 'destroy', 'connect', 'reconnecting', 'reconnectinprogress', 'disconnect', 'error', 'raw', 'resumed'
+] as const satisfies readonly (keyof NodeManagerEvents)[];
 
 
 const LL_MANAGER_EVENTS = 'lavalink-manager';
@@ -68,7 +72,7 @@ export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOpti
   private initialize(ctx: CommandKitPluginRuntime) {
     const client = ctx.commandkit.client;
     if (!client.isReady()) {
-      throw new Error('Client is not ready');
+      throw new Error('LavalinkManagerPlugin initialization failed: Client is not ready.');
     }
 
     LL_EVENT_NAMES.forEach((event) => {
@@ -79,13 +83,13 @@ export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOpti
       });
     });
 
-    // playerEvents.forEach((event) => {
-    //   player.on(event, (...args: any[]) => {
-    //     ctx.commandkit.events
-    //       .to(this.options.playerEventsNamespace!)
-    //       .emit(event, ...args);
-    //   });
-    // });
+    NODE_EVENT_NAMES.forEach((event) => {
+      lavalink!.nodeManager.on(event, (...args: any[]) => {
+        ctx.commandkit.events
+          .to(this.options.nodeManagerNamespace!)
+          .emit(event, ...args);
+      });
+    });
 
     ctx.commandkit.client.on("raw", d => lavalink!.sendRawData(d));
     lavalink!.init({ ...client.user });
