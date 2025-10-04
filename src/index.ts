@@ -71,9 +71,6 @@ export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOpti
       throw new Error('Client is not ready');
     }
 
-    ctx.commandkit.client.on("raw", d => lavalink!.sendRawData(d));
-    lavalink!.init({ ...client.user });
-
     LL_EVENT_NAMES.forEach((event) => {
       lavalink!.on(event, (...args: any[]) => {
         ctx.commandkit.events
@@ -89,6 +86,9 @@ export class LavalinkClientPlugin extends RuntimePlugin<LavalinkClientPluginOpti
     //       .emit(event, ...args);
     //   });
     // });
+
+    ctx.commandkit.client.on("raw", d => lavalink!.sendRawData(d));
+    lavalink!.init({ ...client.user });
   }
 }
 
