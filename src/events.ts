@@ -1,0 +1,45 @@
+import type { LavalinkManagerEvents, NodeManagerEvents } from 'lavalink-client';
+
+export const LL_EVENT_NAMES = [
+  'trackStart',
+  'trackEnd',
+  'trackStuck',
+  'trackError',
+  'queueEnd',
+  'playerCreate',
+  'playerMove',
+  'playerDisconnect',
+  'playerSocketClosed',
+  'playerDestroy',
+  'playerUpdate',
+  'playerMuteChange',
+  'playerDeafChange',
+  'playerSuppressChange',
+  'playerQueueEmptyStart',
+  'playerQueueEmptyEnd',
+  'playerQueueEmptyCancel',
+  'playerVoiceJoin',
+  'playerVoiceLeave',
+  'SegmentsLoaded',
+  'SegmentSkipped',
+  'ChapterStarted',
+  'ChaptersLoaded',
+  'debug',
+  'LyricsLine',
+  'LyricsFound',
+  'LyricsNotFound',
+  'playerResumed',
+  'playerPaused',
+] as const satisfies readonly (keyof LavalinkManagerEvents)[];
+
+export const NODE_EVENT_NAMES = [
+  'create',
+  'destroy',
+  'connect',
+  'reconnecting',
+  'reconnectinprogress',
+  'disconnect',
+  'error',
+  'raw',
+  'resumed'
+] as const satisfies readonly (keyof NodeManagerEvents)[];
