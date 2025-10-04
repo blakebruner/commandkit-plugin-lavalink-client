@@ -1,7 +1,7 @@
 {
   "name": "commandkit-plugin-lavalink-client",
   "description": "This is a CommandKit plugin that allows you to use commandkit's event system to listen to lavalink-client events.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
