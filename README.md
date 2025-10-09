@@ -10,7 +10,7 @@ npm install commandkit-plugin-lavalink-client
 
 ## Usage
 
-In your `commandkit.config.ts` file, the plugin like this:
+In your `commandkit.config.ts` file, init the plugin like this:
 
 ```ts
 import { defineConfig } from 'commandkit';
@@ -35,6 +35,14 @@ setLavalinkManager(lavalink);
 ```
 
 Your bot will now be able to use lavalink-client events and hooks.
+
+To get the manager, use:
+
+```ts
+import { getLavalinkManager } from 'commandkit-plugin-lavalink-client';
+
+const lavalink = getLavalinkManager();
+```
 
 ## Options
 
